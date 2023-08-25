@@ -1,14 +1,23 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fetchAllProducts, fetchProductsByFilters } from './productApi';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  fetchAllProducts,
+  fetchCategories,
+  fetchBrands,
+  fetchProductsByFilters,
+  fetchProductsById,
+} from "./productApi";
 
 const initialState = {
   products: [],
-  status: 'idle',
-  totalItems:0
+  status: "idle",
+  totalItems: 0,
+  categories: [],
+  brands: [],
+  selectedProduct:null  
 };
 
 export const fetchAllProductsAsync = createAsyncThunk(
-  'product/fetchAllProducts',
+  "product/fetchAllProducts",
   async () => {
     const response = await fetchAllProducts();
     // The value we return becomes the `fulfilled` action payload
@@ -17,16 +26,42 @@ export const fetchAllProductsAsync = createAsyncThunk(
 );
 
 export const fetchProductsByFiltersAsync = createAsyncThunk(
-  'product/fetchProductsByFilters',
-  async ({filter,sort,Pagination}) => {
-    const response = await fetchProductsByFilters(filter,sort,Pagination);
+  "product/fetchProductsByFilters",
+  async ({ filter, sort, Pagination }) => {
+    const response = await fetchProductsByFilters(filter, sort, Pagination);
     // The value we return becomes the `fulfilled` action payload
     return response.data;
   }
 );
 
+export const fetchcategoriesAsync = createAsyncThunk(
+  "product/fetchcategoriesAsync",
+  async () => {
+    const response = await fetchCategories();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const fetchBrandsAsync = createAsyncThunk(
+  "product/fetchBrandsAsync",
+  async () => {
+    const response = await fetchBrands();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
+
+export const fetchProductsByIdAsync = createAsyncThunk(
+  "product/fetchProductsById",
+  async (id) => {
+    const response = await fetchProductsById(id);
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
 export const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
@@ -39,20 +74,41 @@ export const productSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllProductsAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchAllProductsAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = "idle";
         state.products = action.payload;
       })
       .addCase(fetchProductsByFiltersAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
       })
       .addCase(fetchProductsByFiltersAsync.fulfilled, (state, action) => {
-        state.status = 'idle';
+        state.status = "idle";
         state.products = action.payload.products;
         state.totalItems = action.payload.totalItems;
       })
+      .addCase(fetchcategoriesAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchcategoriesAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.categories = action.payload;
+      })
+      .addCase(fetchBrandsAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchBrandsAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.brands = action.payload;
+      })
+      .addCase(fetchProductsByIdAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProductsByIdAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.selectedProduct = action.payload;
+      });
   },
 });
 
@@ -63,6 +119,9 @@ export const { increment } = productSlice.actions;
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectAllProducts = (state) => state.product.products;
 export const selectTotalItems = (state) => state.product.totalItems;
+export const selectCategories = (state) => state.product.categories;
+export const selectBrands = (state) => state.product.brands;
+export const selectproducts = (state) => state.product.selectedProduct;
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
