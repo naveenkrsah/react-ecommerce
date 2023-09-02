@@ -42,7 +42,7 @@ export const resetCartAsync = createAsyncThunk(
   }
 );
 
-export const counterSlice = createSlice({
+export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
@@ -92,8 +92,8 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { increment } = counterSlice.actions;
+export const { increment } = cartSlice.actions;
 
 export const selectCount = (state) => state.cart.items;
 
-export default counterSlice.reducer;
+export default cartSlice.reducer;
