@@ -9,18 +9,22 @@ export function createOrder(order) {
     resolve({ data });
   });
 }
-export function fetchAllOrders(sort,pagination) {
+export function fetchAllOrders(sort,Pagination) {
   let queryString = '';
   for (let key in sort){
     queryString += `${key}=${sort[key]}&`
   }
-  for (let key in pagination){
-    queryString += `${key}=${pagination[key]}&`
+  for (let key in Pagination){
+    queryString += `${key}=${Pagination[key]}&`
   }
+  console.log("querryString is "+queryString)
+  console.log("Paginationis"+Pagination);
   return new Promise(async (resolve) =>{
+    console.log("queryString of orders  is "+queryString);
     const response = await fetch('http://localhost:8080/orders?'+queryString)
     const data = await response.json();
-    const totalOrders = await response.headers.get('X-Total-Count')
+    const totalOrders = await response.headers.get('X-Total-Count');
+    console.log("total orders are" + totalOrders);
     resolve({data:{orders:data,totalOrders:totalOrders}})
   });
 }

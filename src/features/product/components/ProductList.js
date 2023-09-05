@@ -95,6 +95,7 @@ export default function ProductList() {
 
   useEffect(() => {
     const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+    console.log("Pagination of pr" +Pagination)
     dispatch(fetchProductsByFiltersAsync({ filter, sort, Pagination }));
   }, [dispatch, filter, sort, page]);
 

@@ -44,8 +44,8 @@ function AdminOrders() {
     setSort(sort);
   }
 
-  useEffect(() => {
-    const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
+  useEffect(() => { 
+    const Pagination = { _page: page, _limit: ITEMS_PER_PAGE }; 
     dispatch(fetchAllOrdersAsync({ sort, Pagination }));
   }, [dispatch, page, sort]);
 
@@ -98,8 +98,8 @@ function AdminOrders() {
                           order: sort._order === "asc" ? "desc" : "asc",
                         })
                       }
-                    >  
-                      Total Amount {" "}
+                    >
+                      Total Amount{" "}
                       {sort._sort === "totalAmount" &&
                         (sort._order === "asc" ? (
                           <ArrowUpIcon className="w-4 h-4 inline"></ArrowUpIcon>
