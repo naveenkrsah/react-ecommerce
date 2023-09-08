@@ -43,19 +43,17 @@ export default function ProductDetail() {
   const user = useSelector(selectLoggedInUser);
   const items = useSelector(selectCount);
 
-
   const dispatch = useDispatch();
   const params = useParams();
 
   const handleCart = (e) => {
-    if(items.findIndex(item=>item.productId===item.id)<0){
-    e.preventDefault();
-    const newItem = {...product,productId:product.id, quantity:1,user:user.id};
-    delete newItem['id'];
-    dispatch(addToCartAsync(newItem))}
-    else{
+    if (items.findIndex((item) => item.product.id === item.id) < 0) {
       e.preventDefault();
-      console.log('Already Added')
+      const newItem = { product: product.id, quantity: 1, user: user.id };
+      dispatch(addToCartAsync(newItem));
+    } else {
+      e.preventDefault();
+      console.log("Already Added");
     }
   };
 

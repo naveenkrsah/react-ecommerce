@@ -1,13 +1,4 @@
-// A mock function to mimic making an async request for data
-export function fetchAllProducts() {
-  return new Promise(async (resolve) =>{
-    const response = await fetch('http://localhost:8080/products')
-    const data = await response.json()
-    resolve({data})
-  });
-}
-
-export function fetchProductsByFilters(filter,sort,Pagination) {
+export function fetchProductsByFilters(filter,sort,Pagination,admin) {
   let queryString = '';
   for(let key in filter){
     const categoryValues = filter[key];
@@ -21,6 +12,9 @@ export function fetchProductsByFilters(filter,sort,Pagination) {
   }
   for (let key in Pagination){
     queryString += `${key}=${Pagination[key]}&`
+  }
+  if(admin){
+    queryString += 'admin=true';
   }
   return new Promise(async (resolve) =>{
     const response = await fetch('http://localhost:8080/products?'+queryString)

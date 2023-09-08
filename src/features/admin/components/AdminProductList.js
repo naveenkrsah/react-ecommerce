@@ -40,8 +40,6 @@ function classNames(...classes) {
 }
 
 export default function AdminProductList() {
-  // const [categories,setCategories] = useState([]);
-  // const [brands, setBrands] = useState([]);
   const products = useSelector(selectAllProducts);
   const totalItems = useSelector(selectTotalItems);
   const categories = useSelector(selectCategories);
@@ -86,24 +84,19 @@ export default function AdminProductList() {
     }
     setFilter(newfilter);
     console.log(section.id, option.value);
-
-    // console.log(newfilter);
-    // setFilter(newfilter);
-    // dispatch(fetchProductsByFiltersAsync(newfilter));
   }
   function handleSort(e, option) {
     const sort = { _sort: option.sort, _order: option.order };
     console.log(sort);
     setSort(sort);
   }
-  // pagination:{_page:1,_limit=10}
   function handlePage(page) {
     setPage(page);
   }
 
   useEffect(() => {
     const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, Pagination }));
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, Pagination, admin:true}));
   }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
