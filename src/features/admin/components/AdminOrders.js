@@ -40,12 +40,11 @@ function AdminOrders() {
 
   function handleSort(sortOption) {
     const sort = { _sort: sortOption.sort, _order: sortOption.order };
-    console.log(sort);
     setSort(sort);
   }
 
-  useEffect(() => { 
-    const Pagination = { _page: page, _limit: ITEMS_PER_PAGE }; 
+  useEffect(() => {
+    const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
     dispatch(fetchAllOrdersAsync({ sort, Pagination }));
   }, [dispatch, page, sort]);
 

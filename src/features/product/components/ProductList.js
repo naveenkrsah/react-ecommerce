@@ -41,10 +41,7 @@ export default function ProductList() {
   const products = useSelector(selectAllProducts);
   const totalItems = useSelector(selectTotalItems);
   const categories = useSelector(selectCategories);
-  console.log(categories);
   const brands = useSelector(selectBrands);
-  console.log(brands);
-  console.log(useSelector(selectAllProducts));
   const dispatch = useDispatch();
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -81,11 +78,9 @@ export default function ProductList() {
       newfilter[section.id].splice(index, 1);
     }
     setFilter(newfilter);
-    console.log(section.id, option.value);
   }
   function handleSort(e, option) {
     const sort = { _sort: option.sort, _order: option.order };
-    console.log(sort);
     setSort(sort);
   }
   function handlePage(page) {
@@ -94,7 +89,6 @@ export default function ProductList() {
 
   useEffect(() => {
     const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    console.log("Pagination of pr" + Pagination);
     dispatch(fetchProductsByFiltersAsync({ filter, sort, Pagination }));
   }, [dispatch, filter, sort, page]);
 

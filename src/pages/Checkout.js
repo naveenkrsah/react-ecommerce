@@ -54,12 +54,10 @@ function Checkout() {
   const currentOrder = useSelector(selectCurrentOrder);
 
   const handleAdress = (e) => {
-    console.log(e.target.value);
     setSelectedAdress(user.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
-    console.log(e.target.value);
     setPaymentMethod(e.target.value);
   };
 
