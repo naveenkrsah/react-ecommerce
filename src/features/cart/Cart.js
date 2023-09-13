@@ -1,22 +1,26 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  cartLoading,
   deleteItemsFromCartAsync,
-  increment,
-  incrementAsync,
+  selectCartLoaded,
   selectCount,
   updateCartAsync,
 } from "./cartSlice";
-import { Dialog, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Link, Navigate } from "react-router-dom";
 import { discountedPrice } from "../../app/constants";
+import { useAlert } from "react-alert";
+import { Blocks } from "react-loader-spinner";
+import Modal from "../common/Modal";
 
 
 export default function Cart() {
-  const [open, setOpen] = useState(true);
+  const loading = useSelector(cartLoading);
+  const alert = useAlert();
+  const [openModal, setOpenMOdal] = useState(null);
   const dispatch = useDispatch();
   const items = useSelector(selectCount);
+  const cartLoaded = useSelector(selectCartLoaded);
 
   const totalAmount = items.reduce(
     (amount, item) => discountedPrice(item.product) * item.quantity + amount,
@@ -30,17 +34,29 @@ export default function Cart() {
 
   const handleRemove = (e, id) => {
     dispatch(deleteItemsFromCartAsync(id));
+    alert.success('Item Removed Successfully')
   };
 
   return (
     <>
-    {!items.length && <Navigate to='/' replace={true} ></Navigate>}
+    {!items.length && cartLoaded && <Navigate to='/' replace={true} ></Navigate>}
     <div>
       <div className="mx-auto mt-12 bg-white max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
           <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">
             Cart
           </h1>
+          {loading === "loading" ? (
+              <Blocks
+                visible={true}
+                height="260"
+                width="160"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                
+              />
+            ) : null}
           <div className="flow-root">
             <ul role="list" className="-my-6 divide-y divide-gray-200">
               {items.map((item) => (
@@ -86,8 +102,18 @@ export default function Cart() {
                       </div>
 
                       <div className="flex">
+                        <Modal
+                        title={`Delete ${item.product.title}`}
+                        message="Are you sure you want to delete this cart item ?"
+                        dangerOption="Delete"
+                        CancelOption="Cancel"
+                        dangerAction={(e) => handleRemove(e, item.id)}
+                        cancelAction={()=>setOpenMOdal(-1)}
+                        showModal={openModal===item.id}>
+
+                        </Modal>
                         <button
-                          onClick={(e) => handleRemove(e, item.id)}
+                          onClick={(e) => setOpenMOdal(item.id)}
                           type="button"
                           className="font-medium text-indigo-600 hover:text-indigo-500"
                         >
@@ -129,7 +155,7 @@ export default function Cart() {
                 <button
                   type="button"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
-                  onClick={() => setOpen(false)}
+                  
                 >
                   Continue Shopping
                   <span aria-hidden="true"> &rarr;</span>

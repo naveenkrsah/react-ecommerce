@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
-import { selectproducts, fetchProductsByIdAsync } from "../productSlice";
+import { selectproducts, fetchProductsByIdAsync, selectLoading } from "../productSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { addToCartAsync, selectCount } from "../../cart/cartSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { discountedPrice } from "../../../app/constants";
+import { useAlert } from "react-alert";
+import { Blocks } from "react-loader-spinner";
 
 const colors = [
   { name: "White", class: "bg-white", selectedClass: "ring-gray-400" },
@@ -37,23 +38,25 @@ function classNames(...classes) {
 }
 
 export default function ProductDetail() {
+  const loading = useSelector(selectLoading);
+  const alert = useAlert();
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [selectedSize, setSelectedSize] = useState(sizes[2]);
   const product = useSelector(selectproducts);
-  const user = useSelector(selectLoggedInUser);
   const items = useSelector(selectCount);
 
   const dispatch = useDispatch();
   const params = useParams();
 
   const handleCart = (e) => {
-    if (items.findIndex((item) => item.product.id === item.id) < 0) {
+    if (items.findIndex((item) => item.product.id === product.id) < 0) {
       e.preventDefault();
-      const newItem = { product: product.id, quantity: 1, user: user.id };
+      const newItem = { product: product.id, quantity: 1 };
       dispatch(addToCartAsync(newItem));
+      alert.success("Item added to cart");
     } else {
       e.preventDefault();
-      console.log("Already Added");
+      alert.error("Item Already Added");
     }
   };
 
@@ -63,6 +66,17 @@ export default function ProductDetail() {
 
   return (
     <div className="bg-white">
+      {loading === "loading" ? (
+              <Blocks
+                visible={true}
+                height="260"
+                width="160"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                
+              />
+            ) : null}
       {product && (
         <div className="pt-6">
           <nav aria-label="Breadcrumb">
@@ -219,7 +233,7 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Sizes */}
-                <div className="mt-10">
+                {/* <div className="mt-10">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-medium text-gray-900">Size</h3>
                     <a
@@ -297,7 +311,7 @@ export default function ProductDetail() {
                       ))}
                     </div>
                   </RadioGroup>
-                </div>
+                </div> */}
 
                 <button
                   onClick={handleCart}
@@ -306,6 +320,15 @@ export default function ProductDetail() {
                 >
                   Add to cart
                 </button>
+                <Link to="/">
+                  <button
+                    type="button"
+                    className="font-medium text-indigo-600 hover:text-indigo-500 "
+                  >
+                    Continue Shopping
+                    <span aria-hidden="true"> &rarr;</span>
+                  </button>
+                </Link>
               </form>
             </div>
 

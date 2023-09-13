@@ -1,7 +1,6 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  fetchAllProductsAsync,
   fetchProductsByFiltersAsync,
   selectAllProducts,
   selectTotalItems,
@@ -9,6 +8,7 @@ import {
   selectBrands,
   fetchcategoriesAsync,
   fetchBrandsAsync,
+  selectLoading,
 } from "../productSlice";
 
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
@@ -25,6 +25,7 @@ import {
 import { Link } from "react-router-dom";
 import { ITEMS_PER_PAGE, discountedPrice } from "../../../app/constants";
 import Pagination from "../../common/Pagination";
+import { Blocks } from "react-loader-spinner";
 
 const sortOptions = [
   { name: "Best Rating", sort: "rating", order: "desc", current: false },
@@ -37,8 +38,6 @@ function classNames(...classes) {
 }
 
 export default function ProductList() {
-  // const [categories,setCategories] = useState([]);
-  // const [brands, setBrands] = useState([]);
   const products = useSelector(selectAllProducts);
   const totalItems = useSelector(selectTotalItems);
   const categories = useSelector(selectCategories);
@@ -95,7 +94,7 @@ export default function ProductList() {
 
   useEffect(() => {
     const Pagination = { _page: page, _limit: ITEMS_PER_PAGE };
-    console.log("Pagination of pr" +Pagination)
+    console.log("Pagination of pr" + Pagination);
     dispatch(fetchProductsByFiltersAsync({ filter, sort, Pagination }));
   }, [dispatch, filter, sort, page]);
 
@@ -405,11 +404,23 @@ function DesktopFIlter({ handleFilter, filters }) {
 }
 
 function ProductGrid({ products }) {
+  const loading = useSelector(selectLoading);
   return (
     <div>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+            {loading === "loading" ? (
+              <Blocks
+                visible={true}
+                height="260"
+                width="160"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                
+              />
+            ) : null}
             {products.map((product) => (
               <Link to={`/product-detail/${product.id}`} key={product.id}>
                 <div className="group relative p-2 border-solid border-2 border-gray-200">
@@ -448,16 +459,12 @@ function ProductGrid({ products }) {
                   <div>
                     {product.deleted && (
                       <div>
-                        <p className="text-sm text-red-400">
-                          Product Deleted
-                        </p>
+                        <p className="text-sm text-red-400">Product Deleted</p>
                       </div>
                     )}
-                    {product.stock<=0 && (
+                    {product.stock <= 0 && (
                       <div>
-                        <p className="text-sm text-red-400">
-                          Out of stock
-                        </p>
+                        <p className="text-sm text-red-400">Out of stock</p>
                       </div>
                     )}
                   </div>

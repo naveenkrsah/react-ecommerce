@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUserInfo, updateUserAsync } from "../userSlice";
 import { useForm } from "react-hook-form";
+import { useAlert } from "react-alert";
 
 export default function UserProfile() {
+  const alert = useAlert();
   const [selectedEditIndex, setSelectedEditIndex] = useState(-1);
   const [showAddAddressForm, setShowAddAddressForm] = useState(false);
   const dispatch = useDispatch();
@@ -20,6 +22,7 @@ export default function UserProfile() {
     const newUser = { ...userInfo, addresses: [...userInfo.addresses] };
     newUser.addresses.splice(index, 1);
     dispatch(updateUserAsync(newUser));
+    alert.success("address deleted")
   };
   const {
     register,
@@ -235,6 +238,7 @@ export default function UserProfile() {
                       Cancel
                     </button>
                     <button
+                      onClick={()=>alert.success("address added successfully")}
                       type="submit"
                       className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >

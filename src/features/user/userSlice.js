@@ -9,8 +9,8 @@ const initialState = {
 
 export const fetchLoggedInUserOrdersAsync = createAsyncThunk(
   'counter/fetchLoggedInUserOrders',
-  async (userId) => {
-    const response = await fetchLoggedInUserOrders(userId);
+  async () => {
+    const response = await fetchLoggedInUserOrders();
     return response.data;
   }
 );
@@ -23,8 +23,8 @@ export const updateUserAsync = createAsyncThunk(
 );
 export const fetchLoggedInUserAsync = createAsyncThunk(
   'counter/fetchLoggedInUser',
-  async (id) => {
-    const response = await fetchLoggedInUser(id);
+  async () => {
+    const response = await fetchLoggedInUser();
     return response.data;
   }
 );
@@ -32,7 +32,6 @@ export const fetchLoggedInUserAsync = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'counter',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     increment: (state) => {
       state.value += 1;
@@ -68,7 +67,6 @@ export const userSlice = createSlice({
 
 export const { increment } = userSlice.actions;
 
-// export const selectOrder = (state) => state.user.userOrders;
 export const selectOrder = (state) => state.user.userInfo.orders;
 export const selectUserInfo = (state) => state.user.userInfo;
 

@@ -15,15 +15,17 @@ import Checkout from "./pages/Checkout";
 import ProductDetailpage from "./pages/ProductDetailPage";
 import Protected from "./features/auth/components/Protected";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLoggedInUser } from "./features/auth/authSlice";
+import {
+  checkAuthAsync,
+  selectUserChecked,
+  selectloggedInUser,
+} from "./features/auth/authSlice";
 import { fetchItemsByUserIdAsync } from "./features/cart/cartSlice";
 import PageNotFound from "./pages/404";
 import OrderSuccessPage from "./pages/OrderSuccess";
 import UserOrderPage from "./pages/UserOrderPage";
 import UserProfilePage from "./pages/UserProfilePage";
-import {
-  fetchLoggedInUserAsync,
-} from "./features/user/userSlice";
+import { fetchLoggedInUserAsync } from "./features/user/userSlice";
 import LogOut from "./features/auth/components/LogOut";
 import ForgotPasswordPage from "./pages/ForgotPassword";
 import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
@@ -31,7 +33,13 @@ import AdminHome from "./pages/AdminHome";
 import AdminProductDetailpage from "./pages/AdminProductDetailPage";
 import AdminProductFormPage from "./pages/AdminProductFormPage";
 import AdminOrdersPage from "./pages/AdminOrdersPage";
-
+import StripeCheckout from "./pages/StripeCheckout";
+import { positions, Provider } from "react-alert";
+import AlertTemplate from "react-alert-template-basic";
+const options = {
+  timeout: 5000,
+  position: positions.BOTTOM_LEFT,
+};
 const router = createBrowserRouter([
   {
     path: "/",
@@ -130,6 +138,14 @@ const router = createBrowserRouter([
     element: <LogOut></LogOut>,
   },
   {
+    path: "/stripe-checkout/",
+    element: (
+      <Protected>
+        <StripeCheckout></StripeCheckout>
+      </Protected>
+    ),
+  },
+  {
     path: "/forgot-password",
     element: <ForgotPasswordPage></ForgotPasswordPage>,
   },
@@ -141,17 +157,24 @@ const router = createBrowserRouter([
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector(selectLoggedInUser);
+  const user = useSelector(selectloggedInUser);
+  const userChecked = useSelector(selectUserChecked);
+
+  useEffect(() => {
+    dispatch(checkAuthAsync());
+  }, []);
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchItemsByUserIdAsync(user.id));
-      dispatch(fetchLoggedInUserAsync(user.id));
+      dispatch(fetchItemsByUserIdAsync());
+      dispatch(fetchLoggedInUserAsync());
     }
   }, [dispatch, user]);
   return (
     <div className="App">
-      <RouterProvider router={router} />
+      <Provider template={AlertTemplate} {...options}>
+        {userChecked && <RouterProvider router={router} />}
+      </Provider>
     </div>
   );
 }

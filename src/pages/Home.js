@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Footer from "../features/common/Footer";
 import Navbar from "../features/navbar/Navbar";
 import ProductList from "../features/product/components/ProductList";
 
@@ -8,7 +8,7 @@ function Home() {
             <Navbar>
                 <ProductList></ProductList>
             </Navbar>
-            <Link to='/admin'>Admin</Link>
+            <Footer></Footer>
         </div>
      );
 }

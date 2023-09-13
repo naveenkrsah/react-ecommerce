@@ -48,7 +48,6 @@ function Checkout() {
     formState: { errors },
   } = useForm();
 
-  // const user = useSelector(selectLoggedInUser);
   const user = useSelector(selectUserInfo);
   const [selectedAdress, setSelectedAdress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -80,9 +79,15 @@ function Checkout() {
   return (
     <>
       {!items.length && <Navigate to="/" replace={true}></Navigate>}
-      {currentOrder && (
+      {currentOrder && currentOrder.paymentMethod==='cash' && (
         <Navigate
           to={`/order-success/${currentOrder.id}`}
+          replace={true}
+        ></Navigate>
+      )}
+      {currentOrder && currentOrder.paymentMethod==='card' && (
+        <Navigate
+          to={`/stripe-checkout/`}
           replace={true}
         ></Navigate>
       )}
